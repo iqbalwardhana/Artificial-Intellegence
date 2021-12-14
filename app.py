@@ -6,9 +6,9 @@ import cv2
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './static/uploads/'
-model = load_model('elephant_lion_class_model.h5')
+model = load_model('predic.h5')
 
-class_dict = {0: 'Elephant (Gajah)', 1: 'Lion (Singa)'}
+class_dict = {0: 'Blimbing Wuluh', 1: 'Jambu Biji'}
 
 def predict_label(img_path):
     query = cv2.imread(img_path)
@@ -18,7 +18,12 @@ def predict_label(img_path):
     q.append(query)
     q = np.array(q, dtype='float') / 255.0
     q_pred = model.predict(q)
-    predicted_bit = int(q_pred)
+    predicted_bit = q_pred * 10
+    if (predicted_bit < 1):
+        predicted_bit = 0
+    if (predicted_bit >= 1):
+        predicted_bit = 1
+    print(predicted_bit)
     return class_dict[predicted_bit]
 
 @app.route('/', methods=['GET', 'POST'])
